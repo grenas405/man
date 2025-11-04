@@ -19,47 +19,45 @@
  */
 
 import { parse } from "https://deno.land/std@0.224.0/flags/mod.ts";
-import { ColorSystem } from "./utils/console-styler/mod.ts";
-
+import {
+  bold,
+  brightRed,
+  dim,
+  italic,
+  red,
+  rgb24,
+} from "https://deno.land/std@0.224.0/fmt/colors.ts";
+import { readKeypress } from "https://deno.land/x/keypress@0.0.11/mod.ts";
 // =============================================================================
 // COLOR SCHEME: FUTURISTIC CYBERPUNK
 // =============================================================================
 
-const c = ColorSystem.codes; // Shorthand for ANSI codes
-
-// Helper functions for colored text with automatic reset
-const colorize = (text: string, rgb: [number, number, number], bold = false): string => {
-  const color = ColorSystem.rgb(rgb[0], rgb[1], rgb[2]);
-  const prefix = bold ? `${c.bright}${color}` : color;
-  return `${prefix}${text}${c.reset}`;
-};
-
 const colors = {
   // Primary neon palette
-  neonCyan: (text: string) => colorize(text, [0x00, 0xFF, 0xFF]),
-  electricBlue: (text: string) => colorize(text, [0x00, 0x80, 0xFF]),
-  deepPurple: (text: string) => colorize(text, [0x8B, 0x00, 0xFF]),
+  neonCyan: (text: string) => rgb24(text, 0x00FFFF),
+  electricBlue: (text: string) => rgb24(text, 0x0080FF),
+  deepPurple: (text: string) => rgb24(text, 0x8B00FF),
 
   // Accent colors
-  neonPink: (text: string) => colorize(text, [0xFF, 0x00, 0xFF], true),
-  plasma: (text: string) => colorize(text, [0x00, 0xFF, 0x88]),
+  neonPink: (text: string) => bold(rgb24(text, 0xFF00FF)),
+  plasma: (text: string) => rgb24(text, 0x00FF88),
 
   // UI elements
-  border: (text: string) => colorize(text, [0x00, 0x44, 0x66]),
-  highlight: (text: string) => colorize(text, [0x00, 0xFF, 0xAA], true),
-  dimCyan: (text: string) => colorize(text, [0x00, 0x66, 0x66]),
+  border: (text: string) => rgb24(text, 0x004466),
+  highlight: (text: string) => bold(rgb24(text, 0x00FFAA)),
+  dimCyan: (text: string) => rgb24(text, 0x006666),
 
   // Text variations
-  header: (text: string) => colorize(text, [0x00, 0xDD, 0xFF], true),
-  subheader: (text: string) => `${c.italic}${colorize(text, [0x88, 0xAA, 0xFF])}`,
-  command: (text: string) => colorize(text, [0xAA, 0xFF, 0xFF], true),
-  option: (text: string) => colorize(text, [0x66, 0xCC, 0xFF]),
+  header: (text: string) => bold(rgb24(text, 0x00DDFF)),
+  subheader: (text: string) => italic(rgb24(text, 0x88AAFF)),
+  command: (text: string) => bold(rgb24(text, 0xAAFFFF)),
+  option: (text: string) => rgb24(text, 0x66CCFF),
 
   // Special effects
   pulse: (text: string, frame: number) => {
     const intensity = Math.sin(frame * 0.1) * 0.5 + 0.5;
     const color = Math.floor(0x00 + intensity * 0xFF);
-    return colorize(text, [0x00, color, 0xFF]);
+    return rgb24(text, (color << 8) | 0xFF);
   },
 };
 // =============================================================================
@@ -509,7 +507,7 @@ class ManualPager {
   }
 
   private centerText(text: string): string {
-    const strippedLength = ColorSystem.stripAnsi(text).length;
+    const strippedLength = text.replace(/\x1B\[[0-9;]*m/g, "").length;
     const padding = Math.max(
       0,
       Math.floor((this.terminalWidth - strippedLength) / 2),
@@ -721,51 +719,11 @@ class ManualPager {
   }
 
   private async readKey(): Promise<string> {
-    Deno.stdin.setRaw(true);
-
-    try {
-      const buffer = new Uint8Array(16);
-      const n = await Deno.stdin.read(buffer);
-
-      if (n === null) return "q"; // EOF - treat as quit
-
-      const data = buffer.subarray(0, n);
-
-      // Single byte characters
-      if (n === 1) {
-        const byte = data[0];
-
-        // Control characters
-        if (byte === 0x03) return "q"; // Ctrl+C
-        if (byte === 0x04) return "q"; // Ctrl+D
-
-        // Special keys
-        if (byte === 0x20) return " "; // Space
-        if (byte === 0x0A || byte === 0x0D) return "down"; // Enter
-
-        // Regular printable characters
-        if (byte >= 0x20 && byte <= 0x7E) {
-          return String.fromCharCode(byte);
-        }
-      }
-
-      // Escape sequences (arrow keys, etc.)
-      if (n >= 3 && data[0] === 0x1B && data[1] === 0x5B) {
-        const code = data[2];
-        if (code === 0x41) return "up";    // Up arrow
-        if (code === 0x42) return "down";  // Down arrow
-        if (code === 0x43) return "right"; // Right arrow
-        if (code === 0x44) return "left";  // Left arrow
-        if (code === 0x35) return "pageup";   // Page Up
-        if (code === 0x36) return "pagedown"; // Page Down
-        if (code === 0x48) return "home";  // Home
-        if (code === 0x46) return "end";   // End
-      }
-
-      return "";
-    } finally {
-      Deno.stdin.setRaw(false);
+    for await (const keypress of readKeypress()) {
+      if (keypress.key) return keypress.key;
+      if (keypress.char) return keypress.char;
     }
+    return "";
   }
 }
 
@@ -861,8 +819,7 @@ export async function manCommand(args: string[]): Promise<number> {
     await showManual(topic);
     return 0;
   } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : String(error);
-    console.error(colors.neonPink(`Error: ${errorMessage}`));
+    console.error(colors.neonPink(`Error: ${error.message}`));
     return 1;
   }
 }
