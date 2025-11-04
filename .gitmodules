@@ -1,0 +1,3 @@
+[submodule "utils/console-styler"]
+	path = utils/console-styler
+	url = https://github.com/grenas405/console-styler.git
