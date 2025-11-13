@@ -19,7 +19,7 @@
  */
 
 import { parse } from "https://deno.land/std@0.224.0/flags/mod.ts";
-import { ColorSystem } from "./utils/console-styler/mod.ts";
+import { ColorSystem } from "./utils/genesis-trace/mod.ts";
 
 // =============================================================================
 // COLOR SCHEME: FUTURISTIC CYBERPUNK
@@ -96,6 +96,10 @@ const MANUAL_PAGES: Map<string, ManualPage> = new Map([
       "",
       "A revolutionary framework proving that timeless principles + modern",
       "technology = unprecedented developer empowerment.",
+      "",
+      "Unix Philosophy 2.0 is our commitment to extend—not replace—the",
+      "original manifesto. We keep text streams, composable tools, and",
+      "transparent state while layering in Deno security and TypeScript ergonomics.",
     ],
     philosophy: [
       '"Make each program do one thing well." - Doug McIlroy',
@@ -103,6 +107,10 @@ const MANUAL_PAGES: Map<string, ManualPage> = new Map([
       "Genesis embodies this principle: One framework, one runtime,",
       "infinite possibilities. No webpack. No npm. No complexity.",
       "Just pure, composable TypeScript that runs everywhere.",
+      "",
+      "This manual pager is not a critique of Unix; it's its next chapter.",
+      "Think of it as the 21st-century continuation of man pages with",
+      "structured output, neon clarity, and traceable runtime context.",
     ],
     sections: [
       {

@@ -1,3 +1,6 @@
 [submodule "utils/console-styler"]
 	path = utils/console-styler
 	url = https://github.com/grenas405/console-styler.git
+[submodule "utils/genesis-trace"]
+	path = utils/genesis-trace
+	url = https://github.com/grenas405/genesis-trace.git

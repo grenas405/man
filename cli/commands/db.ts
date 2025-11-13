@@ -21,11 +21,11 @@
  * - Sensible defaults for all options
  * - No interactive prompts - fully automated
  * - Override via CLI arguments when needed
- * - Self-documenting output with console-styler
+ * - Self-documenting output with GenesisTrace
  */
 
 import { join } from "https://deno.land/std@0.224.0/path/mod.ts";
-import { Logger, BoxRenderer, BannerRenderer } from "../../console-styler/mod.ts";
+import { Logger, BoxRenderer, BannerRenderer } from "../../utils/genesis-trace/mod.ts";
 
 // Types for better developer experience
 interface CLIContext {
@@ -64,7 +64,7 @@ const DEFAULT_DB_CONFIG = {
   useSocket: true,
 };
 
-// Initialize console-styler logger
+// Initialize GenesisTrace logger
 const logger = new Logger();
 const boxRenderer = new BoxRenderer();
 

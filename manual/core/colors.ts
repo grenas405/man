@@ -4,7 +4,7 @@
  * @philosophy Futuristic cyberpunk aesthetic with neon colors
  */
 
-import { ColorSystem } from "../../utils/console-styler/mod.ts";
+import { ColorSystem } from "../../utils/genesis-trace/mod.ts";
 
 // =============================================================================
 // COLOR SCHEME: FUTURISTIC CYBERPUNK

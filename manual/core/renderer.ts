@@ -4,8 +4,8 @@
  * @philosophy Transform structured data into beautiful terminal output
  */
 
-import { ColorSystem } from "../../utils/console-styler/mod.ts";
-import { colors, borderChars } from "./colors.ts";
+import { ColorSystem } from "../../utils/genesis-trace/mod.ts";
+import { borderChars, colors } from "./colors.ts";
 import type { ManualPage } from "./types.ts";
 
 // =============================================================================

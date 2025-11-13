@@ -34,7 +34,7 @@ manual/
 ### Core Features
 - **Vim-like Navigation**: j/k, space/b, g/G for intuitive scrolling
 - **Search Functionality**: Forward search with `/`, navigate with n/N
-- **Cyberpunk Aesthetic**: Neon colors using console-styler library
+- **Cyberpunk Aesthetic**: Neon colors powered by GenesisTrace logger + styler
 - **Modular Design**: Easy to add new manual pages
 
 ### Color Scheme
@@ -149,7 +149,7 @@ export { deployPage } from "./pages/deploy.ts";
 ## Dependencies
 
 - **Deno** - Runtime environment
-- **console-styler** - Color and formatting library (../utils/console-styler/)
+- **GenesisTrace** - Logging & formatting library (../utils/genesis-trace/)
 - **keypress** - Keyboard input handling (https://deno.land/x/keypress)
 
 ## Unix Philosophy
@@ -160,6 +160,12 @@ The Genesis Manual System embodies Unix principles:
 2. **Text-Based Interface**: Terminal-native with no external dependencies
 3. **Composability**: Can be piped, scripted, and integrated
 4. **Self-Documenting**: The manual documents itself
+
+### Unix Philosophy 2.0
+- Extend the original manifesto into the Deno runtime without mocking or replacing it
+- Keep text streams, predictable output, and scriptability as first-class citizens
+- Layer in modern TypeScript ergonomics, security permissions, and structured traces
+- Treat the pager itself as infrastructure: transparent, inspectable, future-proof
 
 ## Development
 
